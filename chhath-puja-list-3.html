@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#7c3f18">
+<title>Chhath Puja Shopping List</title>
+<style>
+:root{--bg:#fff8ed;--card:#fff;--ink:#30251d;--muted:#88796b;--orange:#b85b22;--orange2:#e98a42;--line:#f0dfcc;--green:#26834a;--red:#c34738;--shadow:0 10px 30px #6b3c1712}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:linear-gradient(130deg,#713711,#b85b22 65%,#df8a3f);color:white;padding:20px 18px 34px}.headrow{display:flex;justify-content:space-between;align-items:center;gap:12px}.langbtn{background:#ffffff22;border:1px solid #ffffff88;color:white;padding:8px 12px;white-space:nowrap}.langbtn:hover{background:#ffffff35}
+.top{max-width:980px;margin:auto}.eyebrow{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.8}
+h1{margin:6px 0;font-size:clamp(26px,5vw,38px)}header p{margin:0;opacity:.88}
+main{max-width:980px;margin:-17px auto 40px;padding:0 14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.stat{padding:14px}.stat small{display:block;color:var(--muted);font-size:12px}.stat strong{font-size:22px}
+.panel{padding:18px;margin-bottom:14px}.panel h2{font-size:17px;margin:0 0 14px}
+form{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:9px}
+input,select,button{font:inherit}input,select{width:100%;min-width:0;padding:11px 12px;border:1px solid #e7d7c5;border-radius:10px;background:#fff;color:var(--ink);outline:none}
+input:focus,select:focus{border-color:var(--orange);box-shadow:0 0 0 3px #b85b2218}
+button{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:650}
+.primary{background:var(--orange);color:white}.primary:hover{background:#984516}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.toolbar input{flex:1;min-width:150px}.toolbar select{width:auto}
+.progress{height:8px;background:#f3e7da;border-radius:20px;overflow:hidden;margin:10px 0 16px}.progress span{display:block;height:100%;background:var(--green);width:0;transition:width .2s}
+.item{display:grid;grid-template-columns:auto minmax(0,1fr) 90px 90px 105px auto;gap:10px;align-items:center;padding:12px 2px;border-bottom:1px solid #f2e9df}
+.item:last-child{border-bottom:0}.item input[type=checkbox]{width:18px;height:18px;accent-color:var(--green)}
+.name{font-weight:650;overflow-wrap:anywhere}.meta{font-size:12px;color:var(--muted);margin-top:2px}
+.amount{text-align:right;font-weight:650;font-variant-numeric:tabular-nums}.rate,.qty{font-size:13px;color:#65584c;text-align:right}
+.actions{display:flex;gap:5px}.mini{padding:7px 9px;background:#f7eee5;color:#6b4328;font-size:12px}.delete{background:#fff0ee;color:var(--red)}
+.done .name{text-decoration:line-through;color:#9b9187}.done{opacity:.7}
+.empty{text-align:center;color:var(--muted);padding:25px 8px}
+.footer{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:13px}
+.total{font-size:21px;color:var(--orange);font-weight:800}
+.note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:12px}
+@media(max-width:650px){form{grid-template-columns:1fr 1fr}.namefield{grid-column:1/-1}form button{grid-column:1/-1}.item{grid-template-columns:auto minmax(0,1fr) auto;gap:8px}.qty,.rate{display:none}.amount{grid-column:2;text-align:left;font-size:13px;color:var(--orange)}.actions{grid-column:3;grid-row:1/3}.name{font-size:14px}.stats{gap:7px}.stat{padding:11px}.stat strong{font-size:18px}}
+</style>
+</head>
+<body>
+<header><div class="top"><div class="headrow"><div class="eyebrow" id="eyebrow">छठ पूजा • Shopping planner</div><button class="langbtn" id="langToggle" type="button" onclick="toggleLanguage()">English</button></div><h1 id="appTitle">छठ पूजा सामान सूची 🪔</h1><p id="tagline">सामान जोड़ें, खरीदारी टिक करें और खर्च का हिसाब रखें।</p></div></header>
+<main>
+<section class="stats">
+ <div class="stat"><small id="countLabel">कुल सामान</small><strong id="count">0</strong></div>
+ <div class="stat"><small id="boughtLabel">खरीदे गए</small><strong id="bought">0</strong></div>
+ <div class="stat"><small id="grandLabel">कुल अनुमानित खर्च</small><strong id="grand">₹0</strong></div>
+</section>
+<section class="panel">
+ <h2 id="formTitle">＋ नया सामान जोड़ें</h2>
+ <form id="itemForm">
+  <input class="namefield" id="itemName" placeholder="सामान का नाम (जैसे फल, घी)" required>
+  <input id="itemQty" type="number" min="0" step="0.01" placeholder="मात्रा" value="1" required>
+  <input id="itemRate" type="number" min="0" step="0.01" placeholder="रेट ₹" value="0" required>
+  <button class="primary" id="submitBtn">Add item</button>
+ </form>
+ <div class="note" id="formNote">मात्रा और रेट डालें। उदाहरण: 2 kg × ₹100 = ₹200। किसी भी सामान का नाम, मात्रा या रेट बाद में Edit कर सकते हैं।</div>
+</section>
+<section class="panel">
+ <div class="toolbar">
+  <h2 style="margin:0" id="listTitle">आपकी लिस्ट</h2>
+  <input id="search" placeholder="सामान खोजें…">
+  <select id="filter"><option value="all">सभी</option><option value="pending">बाकी</option><option value="done">खरीदे गए</option></select>
+ </div>
+ <div class="progress"><span id="progressBar"></span></div>
+ <div id="items"></div>
+ <div class="footer"><span id="progressText">0 में से 0 खरीदे गए</span><span><span id="totalLabel">कुल खर्च:</span> <span class="total" id="totalBottom">₹0</span></span></div>
+ <div class="note" id="listNote">नोट: फोटो में लिखे कुछ शब्द साफ़ नहीं थे। नीचे शुरुआती सामान जोड़ा है—लिस्ट में जाकर उन्हें Edit या Delete कर सकते हैं। रेट ₹0 रखे हैं; सही भाव भरते ही कुल अपने-आप जुड़ जाएगा।</div>
+</section>
+</main>
+<script>
+const starterItems = [
+ ["सूप", 2, "pcs"], ["गेहूं", 1, "kg"], ["चीनी", 5, "kg"], ["गुड़", 5, "kg"],
+ ["अरवा चावल", 1, "kg"], ["साड़ी", 1, "pcs"], ["साया", 1, "pcs"], ["ब्लाउज", 1, "pcs"], ["बिंदी", 1, "pcs"], ["सिंदूर", 1, "pcs"],
+ ["दिया", 12, "pcs"], ["खिलौना", 12, "pcs"], ["चौमुख दिया", 1, "pcs"], ["बत्ती", 1, "pack"],
+ ["अगरबत्ती", 1, "pack"], ["कपूर", 1, "pack"], ["केला", 1, "kg"], ["नारियल", 2, "pcs"],
+ ["साठी का चावल", 1, "pack"], ["दही", 1, "pouch"], ["अनार", 1, "kg"],
+ ["कलम", 1, "pc"], ["पापा का पेन (ऑफिस से)", 1, "pc"], ["ऑफिस से अन्य सामान", 1, "item"]
+];
+const KEY="chhathPujaList_v1";
+const LANG_KEY="chhathPujaLanguage";
+let lang=localStorage.getItem(LANG_KEY)||"hi";
+let items;
+try { items=JSON.parse(localStorage.getItem(KEY)) || starterItems.map((x,i)=>({id:i+1,name:x[0],qty:x[1],unit:x[2],rate:0,done:false})); }
+catch { items=starterItems.map((x,i)=>({id:i+1,name:x[0],qty:x[1],unit:x[2],rate:0,done:false})); }
+let editingId=null;
+const $=id=>document.getElementById(id);
+const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});
+const translations={
+ "सूप":"Soop (bamboo basket)","गेहूं":"Wheat","चीनी":"Sugar","गुड़":"Jaggery","अरवा चावल":"Raw rice",
+ "साड़ी":"Saree","साया":"Petticoat","ब्लाउज":"Blouse","बिंदी":"Bindi","सिंदूर":"Sindoor",
+ "दिया":"Diyas","खिलौना":"Toys","चौमुख दिया":"Four-faced diya","बत्ती":"Wicks","अगरबत्ती":"Incense sticks",
+ "कपूर":"Camphor","केला":"Bananas","नारियल":"Coconuts","साठी का चावल":"Sathi rice","दही":"Curd",
+ "अनार":"Pomegranate","कलम":"Pen","पापा का पेन (ऑफिस से)":"Papa's office pen","ऑफिस से अन्य सामान":"Other items from office"
+};
+const T={
+ hi:{eyebrow:"छठ पूजा • Shopping planner",title:"छठ पूजा सामान सूची 🪔",tagline:"सामान जोड़ें, खरीदारी टिक करें और खर्च का हिसाब रखें।",count:"कुल सामान",bought:"खरीदे गए",grand:"कुल अनुमानित खर्च",addTitle:"＋ नया सामान जोड़ें",editTitle:"✎ सामान Edit करें",name:"सामान का नाम (जैसे फल, घी)",qty:"मात्रा",rate:"रेट ₹",add:"जोड़ें",save:"बदलाव सेव करें",formNote:"मात्रा और रेट डालें। उदाहरण: 2 kg × ₹100 = ₹200। किसी भी सामान का नाम, मात्रा या रेट बाद में Edit कर सकते हैं।",list:"आपकी लिस्ट",search:"सामान खोजें…",all:"सभी",pending:"बाकी",done:"खरीदे गए",progress:(d,n)=>`${d} में से ${n} खरीदे गए`,total:"कुल खर्च:",empty:"यहाँ कोई सामान नहीं है। ऊपर से नया सामान जोड़ें।",listNote:"नोट: फोटो में लिखे कुछ शब्द साफ़ नहीं थे। नीचे शुरुआती सामान जोड़ा है—लिस्ट में जाकर उन्हें Edit या Delete कर सकते हैं। रेट ₹0 रखे हैं; सही भाव भरते ही कुल अपने-आप जुड़ जाएगा।",unit:"प्रति यूनिट",edit:"Edit",delete:"हटाएं",confirm:'"{name}" को लिस्ट से हटाएं?'},
+ en:{eyebrow:"CHHATH PUJA • SHOPPING PLANNER",title:"Chhath Puja Shopping List 🪔",tagline:"Add items, tick off purchases and keep track of your spending.",count:"Total items",bought:"Purchased",grand:"Estimated total",addTitle:"＋ Add a new item",editTitle:"✎ Edit item",name:"Item name (e.g. fruits, ghee)",qty:"Quantity",rate:"Rate ₹",add:"Add item",save:"Save changes",formNote:"Enter quantity and rate. Example: 2 kg × ₹100 = ₹200. You can edit the item name, quantity or rate anytime.",list:"Your shopping list",search:"Search items…",all:"All items",pending:"Pending",done:"Purchased",progress:(d,n)=>`${d} of ${n} items purchased`,total:"Total cost:",empty:"No items found. Add a new item above.",listNote:"Note: A few words in the handwritten photo were unclear. The readable items have been added as a starting list. Edit or delete them as needed. Rates are set to ₹0 until you enter the actual prices.",unit:"per unit",edit:"Edit",delete:"Delete",confirm:'Remove "{name}" from the list?'}
+};
+function tr(k){return T[lang][k];}
+function save(){localStorage.setItem(KEY,JSON.stringify(items));render();}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function displayName(name){return lang==="en"?(translations[name]||name):name;}
+function applyLanguage(){
+ const t=T[lang];document.documentElement.lang=lang;
+ $("eyebrow").textContent=t.eyebrow;$("appTitle").textContent=t.title;$("tagline").textContent=t.tagline;
+ $("countLabel").textContent=t.count;$("boughtLabel").textContent=t.bought;$("grandLabel").textContent=t.grand;
+ $("itemName").placeholder=t.name;$("itemQty").placeholder=t.qty;$("itemRate").placeholder=t.rate;
+ $("formNote").textContent=t.formNote;$("listTitle").textContent=t.list;$("search").placeholder=t.search;$("listNote").textContent=t.listNote;
+ $("filter").options[0].text=t.all;$("filter").options[1].text=t.pending;$("filter").options[2].text=t.done;
+ $("langToggle").textContent=lang==="hi"?"English":"हिन्दी";
+ $("formTitle").textContent=editingId!==null?t.editTitle:t.addTitle;
+ $("submitBtn").textContent=editingId!==null?t.save:t.add;
+ $("totalLabel").textContent=t.total;
+ render();
+}
+function toggleLanguage(){lang=lang==="hi"?"en":"hi";localStorage.setItem(LANG_KEY,lang);applyLanguage();}
+function render(){
+ const q=$("search").value.trim().toLowerCase(), f=$("filter").value;
+ const visible=items.filter(x=>(x.name.toLowerCase().includes(q)||displayName(x.name).toLowerCase().includes(q))&&(f==="all"||(f==="done"?x.done:!x.done)));
+ $("count").textContent=items.length;$("bought").textContent=items.filter(x=>x.done).length;
+ const total=items.reduce((s,x)=>s+(Number(x.qty)||0)*(Number(x.rate)||0),0);
+ $("grand").textContent=money(total);$("totalBottom").textContent=money(total);
+ const done=items.filter(x=>x.done).length,pct=items.length?done/items.length*100:0;
+ $("progressBar").style.width=pct+"%";$("progressText").textContent=T[lang].progress(done,items.length);
+ $("items").innerHTML=visible.length?visible.map(x=>`
+ <div class="item ${x.done?'done':''}">
+  <input type="checkbox" aria-label="${lang==='hi'?'खरीदा गया':'Purchased'}" ${x.done?'checked':''} onchange="toggleItem(${x.id})">
+  <div><div class="name">${esc(displayName(x.name))}</div><div class="meta">${esc(x.unit||"")} ${x.unit?" • ":""}${Number(x.qty)||0} × ${money(x.rate)}</div></div>
+  <div class="qty">${Number(x.qty)||0} ${esc(x.unit||"")}</div>
+  <div class="rate">${money(x.rate)} / ${T[lang].unit}</div>
+  <div class="amount">${money((Number(x.qty)||0)*(Number(x.rate)||0))}</div>
+  <div class="actions"><button class="mini" onclick="editItem(${x.id})">${T[lang].edit}</button><button class="mini delete" aria-label="${T[lang].delete}" onclick="deleteItem(${x.id})">×</button></div>
+ </div>`).join(""):`<div class="empty">${T[lang].empty}</div>`;
+}
+$("itemForm").addEventListener("submit",e=>{
+ e.preventDefault();const name=$("itemName").value.trim(),qty=Number($("itemQty").value),rate=Number($("itemRate").value);
+ if(!name||qty<0||rate<0)return;
+ if(editingId!==null){const x=items.find(i=>i.id===editingId);Object.assign(x,{name,qty,rate});}
+ else items.unshift({id:Date.now(),name,qty,rate,unit:"",done:false});
+ resetForm();save();
+});
+function resetForm(){editingId=null;$("itemForm").reset();$("itemQty").value=1;$("itemRate").value=0;applyLanguage();}
+function editItem(id){const x=items.find(i=>i.id===id);if(!x)return;editingId=id;$("itemName").value=x.name;$("itemQty").value=x.qty;$("itemRate").value=x.rate;applyLanguage();$("itemName").focus();window.scrollTo({top:0,behavior:"smooth"});}
+function deleteItem(id){const x=items.find(i=>i.id===id);if(x&&confirm(T[lang].confirm.replace("{name}",x.name))){items=items.filter(i=>i.id!==id);if(editingId===id)resetForm();save();}}
+function toggleItem(id){const x=items.find(i=>i.id===id);if(x){x.done=!x.done;save();}}
+$("search").addEventListener("input",render);$("filter").addEventListener("change",render);
+applyLanguage();
+</script>
+</body>
+</html>
